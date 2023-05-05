@@ -44,7 +44,7 @@ const userPublished = async(user, mediaType) => {
       remoteDiv.id = `remoteVideo-${id}`;
       remoteDiv.className = "videoFrames";
       const remoteUsersDiv = document.getElementById("remoteUsers");
-      remoteUsersDiv.append(remoteDiv);
+      remoteUsersDiv.prepend(remoteDiv);
 
        user.videoTrack.play(`remoteVideo-${id}`);
    }
@@ -62,14 +62,14 @@ const userUnPublished = (user, mediaType)=> {
    }
 }
 
-const generateRtcToken = async (channelName, rtcUid) => {
+const generateRtcToken = (channelName, rtcUid) => {
    
    var requestOptions = {
       method: 'GET',
       redirect: 'follow'
    };
 
-   return fetch(`http://localhost:8080/rtc/${channelName}/publisher/uid/${rtcUid}/?expiry=36000`, requestOptions)
+   return fetch(`http://localhost:3000/rtc/${channelName}/publisher/uid/${rtcUid}/?expiry=36000`, requestOptions)
       .then(response => response.text())
       .then(result => {
          return result;
@@ -270,45 +270,69 @@ const screenShare = async () => {
       channelParameters.screenVideoTrack.play('localVideo')
    }
 }
-
-const sendMessage = () => {
-   const peerId = 'PROFESSOR';
-   let peerMessage = document.getElementById("messageInput").value.toString();
    
-   let option = {
-      chatType: "singleChat",
-      type: "txt",
-      to: peerId,
-      msg:peerMessage
-   };
+   const fetchGroupUsers = () => {
 
-   let msg = AC.message.create(option);
-      chatConnection.send(msg).then((res) => {
-         console.log("Send private text success");
+      var requestOptions = {
+      method: 'GET',
+      redirect: 'follow',
+         headers: {
+         'Accept' : 'application/json',
+         'Content-type' : 'application/json',
+      } 
+      };
+      
+      return fetch("http://localhost:3000/fetchUsers", requestOptions).then(response => response.text())
+         .then(result => {
+         console.log(result)
+         return result;
+      })
+      .catch(error => console.log('error', error));
+     
+   }
 
-         const containerDiv = document.createElement('div');
-         containerDiv.className = 'container darker';
+   const sendMessage = async() => {
 
-         const pDiv = document.createElement('p');
-         pDiv.textContent = peerMessage;
+   //fetch group users
+   const groupInfo = await fetchGroupUsers();
+   console.log(groupInfo)
+   // const peerId = 'PROFESSOR';
+   // let peerMessage = document.getElementById("messageInput").value.toString();
+   
+   // let option = {
+   //    chatType: "singleChat",
+   //    type: "txt",
+   //    to: peerId,
+   //    msg:peerMessage
+   // };
 
-         containerDiv.appendChild(pDiv);
+   // let msg = AC.message.create(option);
+   //    chatConnection.send(msg).then((res) => {
+   //       console.log("Send private text success");
 
-         const spanDiv = document.createElement('span');
-         spanDiv.className = 'darkerTimeStamp';
+   //       const containerDiv = document.createElement('div');
+   //       containerDiv.className = 'container darker';
 
-         const date = new Date();
-         const time = date.toTimeString().split(' ')[0].split(':');
-         spanDiv.textContent = time[0] + ':' + time[1];
+   //       const pDiv = document.createElement('p');
+   //       pDiv.textContent = peerMessage;
 
-         containerDiv.appendChild(spanDiv);
+   //       containerDiv.appendChild(pDiv);
+
+   //       const spanDiv = document.createElement('span');
+   //       spanDiv.className = 'darkerTimeStamp';
+
+   //       const date = new Date();
+   //       const time = date.toTimeString().split(' ')[0].split(':');
+   //       spanDiv.textContent = time[0] + ':' + time[1];
+
+   //       // containerDiv.appendChild(spanDiv);
           
-         const chatWindowDiv = document.getElementById('chatWindow');
-         chatWindowDiv.appendChild(containerDiv);
+   //       const chatWindowDiv = document.getElementById('chatWindow');
+   //       chatWindowDiv.appendChild(containerDiv);
 
-      }).catch(() => {
-         console.log("send message failed");
-   })
+   //    }).catch(() => {
+   //       console.log("send message failed");
+   // })
 }
    
 const leave = async() => {

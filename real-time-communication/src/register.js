@@ -37,18 +37,19 @@ export default function Register() {
   };
 
   const chatRegister = async (userName, password) => {
+   
     var requestOptions = {
       method: "GET",
       redirect: "follow",
       mode:'no-cors'
     };
 
-    const url =
-      "http://localhost:8080/register?account=" +
+    const registeruUrl =
+      "http://localhost:3000/register?account=" +
       userName +
       "&password=" +
       userName;
-    let encoded = encodeURIComponent(url);
+    let encoded = encodeURIComponent(registeruUrl);
     let decoded = decodeURIComponent(encoded).trim();
 
     fetch(decoded, requestOptions)
@@ -63,7 +64,29 @@ export default function Register() {
         {
             console.log("Chat Registration Failed", error)
         }
-        );
+    );
+    
+    //Add user to the group
+
+    const addUseruUrl =
+      "http://localhost:3000/addUser?userName=" + userName;
+     encoded = encodeURIComponent(addUseruUrl);
+     decoded = decodeURIComponent(encoded).trim();
+
+    fetch(decoded, requestOptions)
+      .then((response) => response.text())
+        .then((result) =>
+        {
+            console.log(result)
+            console.log('added user to group success')
+            navigate("/")
+        })
+        .catch((error) =>
+        {
+            console.log("added user to group failed", error)
+        }
+    );
+    
   };
 
   return (
