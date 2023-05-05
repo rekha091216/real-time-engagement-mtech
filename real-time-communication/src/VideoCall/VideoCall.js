@@ -182,12 +182,12 @@ const muteAudio = async () => {
    const img = document.getElementById("muteAudio");
    if (img.src.indexOf('no') !== -1) {
       img.src = './../../audio.png'
-      await channelParameters.localAudioTrack?.setEnabled(true);
+      await channelParameters.localAudioTrack?.setMuted(true);
       await agoraEngine.publish([channelParameters.localAudioTrack]);
    } else
      {
          img.src = './../../no-audio.png'
-         await channelParameters.localAudioTrack?.setEnabled(false);
+         await channelParameters.localAudioTrack?.setMuted(false);
      }
 }
 
