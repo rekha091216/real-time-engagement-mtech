@@ -14,12 +14,14 @@ let channelParameters = {
   localUserUid: null,
   remoteUsers: [],
   channelName: "",
-  channelToken :""
+  channelToken: "",
 };
 
 let cloudRecordParameters = {
   resourceId: "",
-  sessionId: ""
+  sessionId: "",
+  recordedFileName: null,
+  uid:""
 };
 
 const agoraEngine = AgoraRTC.createClient({ mode: "rtc", codec: "vp8" });
@@ -35,33 +37,6 @@ const chatConnection = new AC.connection({
   appKey: options.appKey,
 });
 
-const userPublished = async (user, mediaType) => {
-  const id = user.uid;
-  channelParameters.remoteUsers[id] = user;
-  await agoraEngine.subscribe(user, mediaType);
-
-  console.log("published");
-
-  if (mediaType === "video") {
-    const remoteDiv = document.createElement("div");
-    remoteDiv.id = `remoteVideo-${id}`;
-    remoteDiv.className = "videoFrames";
-    const remoteUsersDiv = document.getElementById("remoteUsers");
-    remoteUsersDiv.prepend(remoteDiv);
-
-    user.videoTrack.play(`remoteVideo-${id}`);
-  }
-  if (mediaType === "audio") {
-    user.audioTrack.play();
-  }
-};
-
-const userUnPublished = (user, mediaType) => {
-  if (mediaType === "video") {
-    const id = user.uid;
-    delete channelParameters.remoteUsers[id];
-  }
-};
 
 const generateRtcToken = (channelName, rtcUid) => {
   var requestOptions = {
@@ -81,6 +56,8 @@ const generateRtcToken = (channelName, rtcUid) => {
 };
 
 const join = async (pa) => {
+
+ 
   var min = 100;
   var max = 1000;
   var uid = Math.floor(Math.random() * (max - min + 1)) + min;
@@ -93,11 +70,9 @@ const join = async (pa) => {
 
   channelParameters.channelToken = rtcToken;
   console.log("rtcToken" + rtcToken);
-  const recorderToken =  JSON.parse(await generateRtcToken(channelParameters.channelName, 111)).rtcToken;
-  console.log("recorderToken" + recorderToken);
 
   await agoraEngine.join(options.appId, pa.state.roomName, rtcToken, uid);
-  
+
   const promiseChat = new Promise((resolve, reject) => {
     chatConnection.open({
       user: channelParameters.localUserName,
@@ -176,13 +151,42 @@ const join = async (pa) => {
 };
 
 function VideoCall() {
+  const navigate = useNavigate();
+  
   useEffect(() => {
     window.onbeforeunload = function () {
       navigate("/");
     };
-  }, []);
+  });
 
-  const navigate = useNavigate();
+  const userPublished = async (user, mediaType) => {
+  const id = user.uid;
+  channelParameters.remoteUsers[id] = user;
+  await agoraEngine.subscribe(user, mediaType);
+
+  console.log("published");
+
+  if (mediaType === "video") {
+    const remoteDiv = document.createElement("div");
+    remoteDiv.id = `remoteVideo-${id}`;
+    remoteDiv.className = "videoFrames";
+    const remoteUsersDiv = document.getElementById("remoteUsers");
+    remoteUsersDiv.prepend(remoteDiv);
+
+    user.videoTrack.play(`remoteVideo-${id}`);
+  }
+  if (mediaType === "audio") {
+    user.audioTrack.play();
+  }
+};
+
+const userUnPublished = (user, mediaType) => {
+  if (mediaType === "video") {
+    const id = user.uid;
+    delete channelParameters.remoteUsers[id];
+  }
+};
+
   const locationParameters = useLocation();
   channelParameters.localUserName = locationParameters.state.userName;
   agoraEngine.on("user-unpublished", userUnPublished);
@@ -190,87 +194,124 @@ function VideoCall() {
 
   join(locationParameters);
 
+  
   const muteAudio = async () => {
     const img = document.getElementById("muteAudio");
     if (img.src.indexOf("no") !== -1) {
       img.src = "./../../audio.png";
-      await channelParameters.localAudioTrack?.setMuted(true);
+      await channelParameters.localAudioTrack?.setMuted(false);
       await agoraEngine.publish([channelParameters.localAudioTrack]);
     } else {
       img.src = "./../../no-audio.png";
-      await channelParameters.localAudioTrack?.setMuted(false);
+      await channelParameters.localAudioTrack?.setMuted(true);
+    }
+  };
+
+  const acquireResource = async (channelName, recordUid) => {
+    var myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+    myHeaders.append("Accept", "application/json");
+
+    var requestOptions = {
+      method: "POST",
+      headers: myHeaders,
+      redirect: "follow",
+    };
+
+    try {
+      const response = await fetch(
+        "http://localhost:3030/acquire?channelName=" +
+        channelName +
+        "&recordUid=" +
+        recordUid,
+        requestOptions
+      );
+      const result_1 = await response.text();
+      return result_1;
+    } catch (error) {
+      return console.log("error", error);
+    }
+  };
+
+  const startRecording = async (channelName, recordUid) => {
+    const recordUidToken = JSON.parse(
+      await generateRtcToken(channelName, recordUid)
+    ).rtcToken;
+
+    var request = {
+      method: "POST",
+      redirect: "follow",
+      body: JSON.stringify({
+        recorderToken: recordUidToken,
+        resourceId: cloudRecordParameters.resourceId
+      }),
+      headers: {
+        "Accept": "application/json",
+        "Content-Type": "application/json",
+      },
+    };
+
+    try {
+      const res = await fetch(
+        "http://localhost:3030/start?channelName=" +
+        channelName +
+        "&recordUid=" +
+        recordUid,
+        request
+      );
+      const result_1 = await res.text();
+      document.getElementById("Record").title = "Recording";
+      return result_1;
+    } catch (error) {
+      return console.log("error", error);
+    }
+      
+  };
+
+  const stopRecording = async (channelName, recordUid) => {
+    var request = {
+      method: "POST",
+      redirect: "follow",
+      body: JSON.stringify({
+        sessionId: cloudRecordParameters.sessionId,
+        resourceId: cloudRecordParameters.resourceId
+      }),
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+    };
+
+    try {
+      const res = await fetch("http://localhost:3030/stop?channelName=" + channelName + "&recordUid=" + recordUid, request);
+      const result_1 = await res.text();
+      document.getElementById("Record").title = "Record";
+      return result_1;
+    } catch (error) {
+      return console.log("error", error);
     }
   };
 
   const cloudRecord = async () => {
-
-    var min = 100;
-    var max = 500;
-    var recordUid = Math.floor(Math.random() * (max - min + 1)) + min;
-
     const channelName = channelParameters.channelName;
 
-    var requestOptions = {
-      method: "POST",
-      redirect: "follow",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-        }
-      };
-    
-    if (document.getElementById("Record").title === "Record")
-    {
-      //call acquire
-      const resourceId = await fetch(`http://localhost:3030/acquire/${channelName}/${recordUid}`, requestOptions)
-      .then((response) => response.text())
-      .then((result) => {
-        console.log(result);
-        return result;
-      })
-      .catch((error) => console.log("error", error));
+    if (document.getElementById("Record").title === "Record") {
+      var min = 100;
+      var max = 500;
+      cloudRecordParameters.uid = Math.floor(Math.random() * (max - min + 1)) + min;
+      
+      cloudRecordParameters.resourceId = JSON.parse(
+        await acquireResource(channelName, cloudRecordParameters.uid)
+      ).resourceId;
 
-      cloudRecordParameters.resourceId = resourceId;
-
-      const channelToken = channelParameters.channelToken;
-      const recordUidToken =  JSON.parse(await generateRtcToken(channelName, recordUid)).rtcToken;
-
-      var startRequestOptions = {
-      method: "POST",
-      redirect: "follow",
-        body: {
-          "channelToken": channelToken,
-          "recorderToken": recordUidToken
-      },
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-        }
-      };
-
-      //start
-      const sessionId = await fetch(`http://localhost:3030/start/${channelName}/${recordUid}/${resourceId}`, startRequestOptions)
-      .then((response) => response.text())
-      .then((result) => {
-        console.log(result);
-        return result;
-      })
-      .catch((error) => console.log("error", error));
-
-      cloudRecordParameters.sessionId = sessionId;
-      document.getElementById("Record").title = "Recording"
+       cloudRecordParameters.sessionId = JSON.parse(await startRecording(channelName, cloudRecordParameters.uid)).sessionId;
     }
     else {
-      
-      //stop
-      document.getElementById("Record").title = "Record";
-
-    return fetch(`http://localhost:3030/stop/${cloudRecordParameters.resourceId}/${cloudRecordParameters.sessionId}`, requestOptions)
-    .then(response => response.text())
-    .then(result => console.log(result))
-    .catch(error => console.log('error', error));
+      cloudRecordParameters.recordedFileName = await stopRecording(channelName, cloudRecordParameters.uid);
+      console.log(cloudRecordParameters.recordedFileName)
     }
-  };
+  }
+
 
   const muteCamera = async () => {
     const img = document.getElementById("camera");
@@ -357,14 +398,11 @@ function VideoCall() {
 
       if (channelParameters.screenAudioTrack == null) {
         await agoraEngine.publish([
-          channelParameters.screenVideoTrack,
-          channelParameters.localAudioTrack,
+          channelParameters.screenVideoTrack
         ]);
       } else {
         await agoraEngine.publish([
           channelParameters.screenVideoTrack,
-          channelParameters.localAudioTrack,
-          channelParameters.screenAudioTrack,
         ]);
       }
       channelParameters.screenVideoTrack.play("localVideo");
@@ -437,8 +475,8 @@ function VideoCall() {
     chatWindowDiv.appendChild(containerDiv);
   };
 
-
   const leave = async () => {
+
     channelParameters.localVideoTrack?.close();
     channelParameters.screenVideoTrack?.close();
     channelParameters.screenAudioTrack?.close();
@@ -460,7 +498,7 @@ function VideoCall() {
               <div class="videoFrames" />
             </div>
             <div class="localVideo" id="localVideo"></div>
-            <h3 className="chattitle">Chat</h3>
+            <h3 class="chattitle">Chat</h3>
             <div class="chatWindow" id="chatWindow"></div>
           </div>
         </div>
@@ -490,10 +528,15 @@ function VideoCall() {
                   src="./../../screenshare.png"
                 ></img>
               </button>
-              <button id ="Record" class="button" title="Record" onClick={cloudRecord} >
+              <button
+                id="Record"
+                class="button"
+                title="Record"
+                onClick={cloudRecord}
+              >
                 <img
                   id="upload"
-                  class="muteimg" 
+                  class="muteimg"
                   alt="upload"
                   src="./../../upload.png"
                 ></img>
@@ -523,5 +566,6 @@ function VideoCall() {
       </div>
     </>
   );
-}
+
+};
 export default VideoCall;

@@ -25,6 +25,8 @@ export default function Register() {
     const userName = data.get("userName");
     const confirmPassword = data.get("confirmpassword");
     const password = data.get("password");
+    
+    if (userName === "" || password === "" || confirmPassword === "") return; 
 
     if (password !== confirmPassword) {
       // eslint-disable-next-line no-const-assign

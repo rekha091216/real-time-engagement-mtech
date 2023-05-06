@@ -26,8 +26,9 @@ export default function SignInSide() {
     const roomName = data.get('roomName');
     const isCameraEnabled = data.get('camera');
     const isMicrophoneEnabled = data.get('microphone');
-
-      navigate("/videoCall", {
+    if (userName === "" || roomName === "") return; 
+    
+    navigate("/videoCall", {
         state: {
           userName: userName,
           roomName: roomName,
@@ -89,7 +90,6 @@ export default function SignInSide() {
                 name="roomName"
                 label="Room Name"
                 id="roomName"
-                autoComplete="current-password"
               />
               <FormGroup>
                 <FormControlLabel control={<Checkbox name="camera"/>} label="Turn on Camera" ></FormControlLabel>
