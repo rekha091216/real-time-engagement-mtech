@@ -167,13 +167,13 @@
   .timeStamp {
     color:grey ;
     margin-top: 40px;
-    margin-left: 32px;
+    /* margin-left: 170px; */
   }
 
   .darkerTimeStamp {
     color:grey ;
     margin-top: 40px;
-    margin-left: 270px;
+    /* margin-left: 270px; */
   }
   
   .time-left {

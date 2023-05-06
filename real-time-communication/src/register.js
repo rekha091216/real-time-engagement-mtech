@@ -17,7 +17,7 @@ const theme = createTheme();
 
 export default function Register() {
   const navigate = useNavigate();
-  const [isPwdMatching, setIsPwdMatching] = useState('hidden');
+  const [isPwdMatching, setIsPwdMatching] = useState("hidden");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -28,24 +28,23 @@ export default function Register() {
 
     if (password !== confirmPassword) {
       // eslint-disable-next-line no-const-assign
-      setIsPwdMatching('visible');
+      setIsPwdMatching("visible");
     } else {
-      setIsPwdMatching('hidden');
+      setIsPwdMatching("hidden");
       chatRegister(userName, password);
       navigate("/");
     }
   };
 
   const chatRegister = async (userName, password) => {
-   
     var requestOptions = {
       method: "GET",
       redirect: "follow",
-      mode:'no-cors'
+      mode: "no-cors",
     };
 
     const registeruUrl =
-      "http://localhost:3000/register?account=" +
+      "http://localhost:3030/register?account=" +
       userName +
       "&password=" +
       userName;
@@ -54,39 +53,31 @@ export default function Register() {
 
     fetch(decoded, requestOptions)
       .then((response) => response.text())
-        .then((result) =>
-        {
-            console.log(result)
-            console.log('chat registration success')
-            navigate("/")
-        })
-        .catch((error) =>
-        {
-            console.log("Chat Registration Failed", error)
-        }
-    );
-    
+      .then((result) => {
+        console.log(result);
+        console.log("chat registration success");
+        navigate("/");
+      })
+      .catch((error) => {
+        console.log("Chat Registration Failed", error);
+      });
+
     //Add user to the group
 
-    const addUseruUrl =
-      "http://localhost:3000/addUser?userName=" + userName;
-     encoded = encodeURIComponent(addUseruUrl);
-     decoded = decodeURIComponent(encoded).trim();
+    const addUseruUrl = "http://localhost:3030/addUser?userName=" + userName;
+    encoded = encodeURIComponent(addUseruUrl);
+    decoded = decodeURIComponent(encoded).trim();
 
     fetch(decoded, requestOptions)
       .then((response) => response.text())
-        .then((result) =>
-        {
-            console.log(result)
-            console.log('added user to group success')
-            navigate("/")
-        })
-        .catch((error) =>
-        {
-            console.log("added user to group failed", error)
-        }
-    );
-    
+      .then((result) => {
+        console.log(result);
+        console.log("added user to group success");
+        navigate("/");
+      })
+      .catch((error) => {
+        console.log("added user to group failed", error);
+      });
   };
 
   return (
@@ -156,7 +147,7 @@ export default function Register() {
                 type="password"
                 autoComplete="new-password"
               />
-              <Alert style={{visibility: isPwdMatching}} severity="warning">
+              <Alert style={{ visibility: isPwdMatching }} severity="warning">
                 Passwords are not matching
               </Alert>
               <Button
