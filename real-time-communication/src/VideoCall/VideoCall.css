@@ -305,23 +305,3 @@ background-color: lightblue;
 .message{
   margin-left: 40px;
 }
-
-@media (min-width: 2400px)  {
-
-  .chatWindow {
-    height: 820px;
-  }
-
-  .localVideo {
-    height: 840px;
-    width: 61%;
-  }
-  .flexContainer {
-    padding-right: 2px;
-    float: right;
-    width: 28%;
-  }
-  .remoteVideo{
-    width: 11%;
-  }
-}
