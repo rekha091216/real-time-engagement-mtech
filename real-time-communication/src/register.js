@@ -14,6 +14,7 @@ import { Alert } from "@mui/material";
 import { useState } from "react";
 
 const theme = createTheme();
+const TOKEN_SERVER_HOST_URL = 'https://rtc-be.onrender.com';
 
 export default function Register() {
   const navigate = useNavigate();
@@ -45,8 +46,7 @@ export default function Register() {
       mode: "no-cors",
     };
 
-    const registeruUrl =
-      "http://localhost:3030/register?account=" +
+    const registeruUrl = TOKEN_SERVER_HOST_URL+ "/register?account=" +
       userName +
       "&password=" +
       userName;

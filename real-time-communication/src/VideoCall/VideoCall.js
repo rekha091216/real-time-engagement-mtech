@@ -5,6 +5,8 @@ import "./VideoCall.css";
 import { useNavigate } from "react-router-dom";
 import AC from "agora-chat";
 
+const TOKEN_SERVER_HOST_URL = 'https://rtc-be.onrender.com';
+
 let channelParameters = {
   localAudioTrack: null,
   localVideoTrack: null,
@@ -45,7 +47,7 @@ const generateRtcToken = (channelName, rtcUid) => {
   };
 
   return fetch(
-    `http://localhost:3030/rtc/${channelName}/publisher/uid/${rtcUid}/?expiry=36000`,
+    `${TOKEN_SERVER_HOST_URL}/rtc/${channelName}/publisher/uid/${rtcUid}/?expiry=36000`,
     requestOptions
   )
     .then((response) => response.text())
@@ -57,7 +59,6 @@ const generateRtcToken = (channelName, rtcUid) => {
 
 const join = async (pa) => {
 
- 
   var min = 100;
   var max = 1000;
   var uid = Math.floor(Math.random() * (max - min + 1)) + min;
@@ -220,7 +221,7 @@ const userUnPublished = (user, mediaType) => {
 
     try {
       const response = await fetch(
-        "http://localhost:3030/acquire?channelName=" +
+       TOKEN_SERVER_HOST_URL + "/acquire?channelName=" +
         channelName +
         "&recordUid=" +
         recordUid,
@@ -252,8 +253,7 @@ const userUnPublished = (user, mediaType) => {
     };
 
     try {
-      const res = await fetch(
-        "http://localhost:3030/start?channelName=" +
+      const res = await fetch( TOKEN_SERVER_HOST_URL + "/start?channelName=" +
         channelName +
         "&recordUid=" +
         recordUid,
@@ -283,7 +283,7 @@ const userUnPublished = (user, mediaType) => {
     };
 
     try {
-      const res = await fetch("http://localhost:3030/stop?channelName=" + channelName + "&recordUid=" + recordUid, request);
+      const res = await fetch(TOKEN_SERVER_HOST_URL + "/stop?channelName=" + channelName + "&recordUid=" + recordUid, request);
       const result_1 = await res.text();
       document.getElementById("Record").title = "Record";
       return result_1;
@@ -419,7 +419,7 @@ const userUnPublished = (user, mediaType) => {
       },
     };
 
-    return fetch("http://localhost:3030/fetchUsers", requestOptions)
+    return fetch(TOKEN_SERVER_HOST_URL + "/fetchUsers", requestOptions)
       .then((response) => response.text())
       .then((result) => {
         console.log(result);
