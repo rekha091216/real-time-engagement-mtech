@@ -66,7 +66,7 @@ export default function Register() {
 
     //Add user to the group
 
-    const addUseruUrl = "http://localhost:3030/addUser?userName=" + userName;
+    const addUseruUrl = TOKEN_SERVER_HOST_URL + "/addUser?userName=" + userName;
     encoded = encodeURIComponent(addUseruUrl);
     decoded = decodeURIComponent(encoded).trim();
 
