@@ -306,7 +306,7 @@ background-color: lightblue;
   margin-left: 40px;
 }
 
-@media (min-width: 2400px)  {
+@media (max-width: 2400px)  {
 
   .chatWindow {
     height: 820px;
