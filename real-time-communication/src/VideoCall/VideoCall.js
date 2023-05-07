@@ -496,6 +496,7 @@ const userUnPublished = (user, mediaType) => {
               <div class="videoFrames" />
               <div class="videoFrames" />
               <div class="videoFrames" />
+              <div class="videoFrames" />
             </div>
             <div class="localVideo" id="localVideo"></div>
             <h3 class="chattitle">Chat</h3>
