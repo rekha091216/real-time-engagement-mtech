@@ -25,16 +25,14 @@
 
 .wrapper {
     display: grid;
-    margin:5px;
-    padding:5px;
     height: 100%;
     overflow: auto;
     text-align:justify;
   }
 
   .videoFrames {
-    width:200px;
-	  height:200px;
+    width:150px;
+	  height:150px;
 	  margin:10px;
 	  padding:10px;
     white-space:pre;
@@ -63,16 +61,17 @@
 
  .remoteVideo {
     float: left;
-    width: 15%;
+    /* width: 15%; */
     height: 850px;
     overflow-y: scroll;
     margin: 5px;
  }
 
  .localVideo {
-    width: 53%;
+    /* width: 53%; */
+    width: 55%;
     float: left;
-    height: 720px;
+    height: 550px;
     padding:10px;
     margin: 10px;
     border: gray solid 5px;
@@ -94,12 +93,12 @@
   margin: 9px; 
   float: right;
   width: 24%;
-  height: 700px;
+  height: 540px;
   border-radius: 25px;
   border: gray solid 5px;
   overflow-y: scroll;
  }
- 
+
 
  .chatHeader {
   font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
@@ -231,7 +230,7 @@
   }
 
   .first{
-    width: 67%;
+    width: 66%;
     height: 80px;
     text-align: center;
     border-radius: 25px;
@@ -253,8 +252,8 @@
 
 .flexContainer {
     display: flex;
-    width: 29%;
-    padding-left: 48px;
+    width: 30%;
+    padding-left: 4834px;
     padding-top: 5px;
     height: 30%;
 }
