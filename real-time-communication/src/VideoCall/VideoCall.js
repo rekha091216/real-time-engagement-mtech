@@ -490,7 +490,7 @@ const userUnPublished = (user, mediaType) => {
     <>
       <div>
         <div class="wrapper">
-          <div id="header">Room Name : {locationParameters.state.roomName}</div>
+          <div id="header">Room Name : {locationParameters.state.roomName}<span class="userName">{ locationParameters.state.userName}</span> </div>
           <div class="row">
             <div class="remoteVideo" id="remoteUsers">
               <div class="videoFrames" />

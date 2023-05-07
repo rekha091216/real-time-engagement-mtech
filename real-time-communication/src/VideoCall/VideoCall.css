@@ -1,3 +1,4 @@
+@media (min-width: 481px) {
 #header {
   height: 8vh;
   background-color: grey;
@@ -9,6 +10,18 @@
   line-height: 70px;
   width: 100%;
   background-image: url('./../../public/titleImg.jpeg');
+}
+
+.userName {
+  height: 8vh;
+  color: white;
+  text-align: center !important;
+  font-size: 30px;
+  font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+  border-radius: 15px;
+  line-height: 70px;
+  float: right;
+  margin-right: 30px;
 }
 
 .wrapper {
@@ -292,4 +305,24 @@ background-color: lightblue;
 
 .message{
   margin-left: 40px;
+}
+}
+@media (min-width: 640px)  {
+
+  .chatWindow {
+    height: 820px;
+  }
+
+  .localVideo {
+    height: 840px;
+    width: 61%;
+  }
+  .flexContainer {
+    padding-right: 2px;
+    float: right;
+    width: 28%;
+  }
+  .remoteVideo{
+    width: 11%;
+  }
 }
