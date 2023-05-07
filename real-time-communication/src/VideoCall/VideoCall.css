@@ -1,4 +1,3 @@
-@media (min-width: 481px) {
 #header {
   height: 8vh;
   background-color: grey;
@@ -306,8 +305,8 @@ background-color: lightblue;
 .message{
   margin-left: 40px;
 }
-}
-@media (min-width: 640px)  {
+
+@media (min-width: 2400px)  {
 
   .chatWindow {
     height: 820px;
