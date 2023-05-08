@@ -1,10 +1,10 @@
 import { useLocation } from "react-router-dom";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import AgoraRTC from "agora-rtc-sdk-ng";
 import "./VideoCall.css";
 import { useNavigate } from "react-router-dom";
 import AC from "agora-chat";
-
+import FiberManualRecordRoundedIcon from '@mui/icons-material/FiberManualRecordRounded';
 const TOKEN_SERVER_HOST_URL = 'https://rtc-be.onrender.com';
 
 let channelParameters = {
@@ -154,6 +154,7 @@ const join = async (pa) => {
 
 function VideoCall() {
   const navigate = useNavigate();
+  const [isRecording, setIsRecording] = useState(false);
   
   useEffect(() => {
     window.onbeforeunload = function () {
@@ -254,6 +255,7 @@ const userUnPublished = (user, mediaType) => {
     };
 
     try {
+        setIsRecording(true);
       const res = await fetch( TOKEN_SERVER_HOST_URL + "/start?channelName=" +
         channelName +
         "&recordUid=" +
@@ -287,6 +289,7 @@ const userUnPublished = (user, mediaType) => {
       const res = await fetch(TOKEN_SERVER_HOST_URL + "/stop?channelName=" + channelName + "&recordUid=" + recordUid, request);
       const result_1 = await res.text();
       document.getElementById("Record").title = "Record";
+        setIsRecording(true);
       return result_1;
     } catch (error) {
       return console.log("error", error);
@@ -499,7 +502,12 @@ const userUnPublished = (user, mediaType) => {
               <div class="videoFrames" />
               <div class="videoFrames" />
             </div>
-            <div class="localVideo" id="localVideo"></div>
+            <div class="localVideo" id="localVideo">
+              <div class="recordText" hidden={!isRecording}>
+                <FiberManualRecordRoundedIcon fontSize="small" style={{fill:"red"}}/>
+                <span style={{verticalAlign:"top"}} >Recording</span>
+                </div>
+            </div>
             <h3 class="chattitle">Chat</h3>
             <div class="chatWindow" id="chatWindow"></div>
           </div>

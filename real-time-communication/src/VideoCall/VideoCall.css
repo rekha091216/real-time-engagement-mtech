@@ -79,10 +79,11 @@
     background-image: url('./../../public/defaultpic.jpeg');
     background-repeat: no-repeat;
     background-position: center;
+    background-size:70%;
  }
 
  .localDefaultVideo{
-  height: 500px;
+  height: 400px;
 	margin:10px;
  }
 
@@ -310,4 +311,9 @@ background-color: lightblue;
 .second {
   float: right;
   width: 32%;
+}
+
+.recordText{
+  float: right;
+  margin-left: 90%;
 }
