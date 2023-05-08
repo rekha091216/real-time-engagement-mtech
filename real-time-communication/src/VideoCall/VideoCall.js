@@ -17,6 +17,7 @@ let channelParameters = {
   remoteUsers: [],
   channelName: "",
   channelToken: "",
+  chatPassword:""
 };
 
 let cloudRecordParameters = {
@@ -70,14 +71,14 @@ const join = async (pa) => {
   ).rtcToken;
 
   channelParameters.channelToken = rtcToken;
-  console.log("rtcToken" + rtcToken);
+  channelParameters.chatPassword = pa.state.password;
 
   await agoraEngine.join(options.appId, pa.state.roomName, rtcToken, uid);
 
   const promiseChat = new Promise((resolve, reject) => {
     chatConnection.open({
       user: channelParameters.localUserName,
-      pwd: channelParameters.localUserName,
+      pwd: channelParameters.chatPassword,
     });
   });
 

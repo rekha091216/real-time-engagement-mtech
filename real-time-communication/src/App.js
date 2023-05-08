@@ -23,14 +23,16 @@ export default function SignInSide() {
     e.preventDefault();
     const data = new FormData(e.currentTarget);
     const userName = data.get('userName');
+    const password = data.get('password');
     const roomName = data.get('roomName');
     const isCameraEnabled = data.get('camera');
     const isMicrophoneEnabled = data.get('microphone');
-    if (userName === "" || roomName === "") return; 
+    if (userName === "" || roomName === "" || password === "") return; 
     
     navigate("/videoCall", {
         state: {
-          userName: userName,
+        userName: userName,
+          password:password,
           roomName: roomName,
           isCameraEnabled: isCameraEnabled,
           isMicrophoneEnabled: isMicrophoneEnabled
@@ -81,6 +83,16 @@ export default function SignInSide() {
                 label="User Name"
                 name="userName"
                 autoComplete="userName"
+                autoFocus
+              />
+               <TextField
+                margin="normal"
+                required
+                fullWidth
+                id="password"
+                label="Password"
+                name="password"
+                autoComplete="password"
                 autoFocus
               />
               <TextField
