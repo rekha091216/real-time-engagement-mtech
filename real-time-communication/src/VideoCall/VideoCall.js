@@ -451,7 +451,7 @@ const userUnPublished = (user, mediaType) => {
       chatConnection
         .send(msg)
         .then((res) => {
-          console.log("Send private text success");
+          console.log("Send private text success", res);
         })
         .catch((error) => {
           console.log("send message failed", error);
