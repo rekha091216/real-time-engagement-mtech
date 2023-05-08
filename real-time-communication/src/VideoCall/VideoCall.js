@@ -453,8 +453,8 @@ const userUnPublished = (user, mediaType) => {
         .then((res) => {
           console.log("Send private text success");
         })
-        .catch(() => {
-          console.log("send message failed");
+        .catch((error) => {
+          console.log("send message failed", error);
         });
     });
 
